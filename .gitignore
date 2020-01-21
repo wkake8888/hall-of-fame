@@ -60,11 +60,14 @@ coverage.xml
 *.log
 settings.py
 db.sqlite3
+static/admin
+.DS_Store
 
 # specific files
 additional_function.txt
 task.txt
 mydatabase
+manage.py
 
 
 # pyenv
