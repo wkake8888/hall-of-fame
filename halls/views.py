@@ -2,15 +2,18 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.forms import UserCreationForm
 from .models import Hall, Video
-from .forms import VideoForm, SearchForm
+from .forms import SingupForm, VideoForm, SearchForm
 from django.http import Http404, JsonResponse
 import urllib
 import requests
 from django.forms.utils import ErrorList
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from .task import welcome_mail
+from django.core.mail import send_mail
+from django.template.loader import render_to_string
+
 
 YOUTUBE_API_KEY = 'AIzaSyDiCnsnhoOLn0xMhpbyU8RjNmMbrrypnI4'
 
@@ -70,7 +73,7 @@ def video_search(request):
 
 
 class SignUp(generic.CreateView):
-    form_class = UserCreationForm
+    form_class = SingupForm
     success_url = reverse_lazy('dashboard')
     template_name = 'registration/signup.html'
 
@@ -81,6 +84,16 @@ class SignUp(generic.CreateView):
         username, password = form.cleaned_data.get('username'), form.cleaned_data.get('password1')
         user = authenticate(username=username, password=password)
         login(self.request, user)
+        # Send email
+        html_message = render_to_string(
+            'registration/send_welcome_mail.html',
+            {
+                'username': user.username,
+            }
+        )
+
+        send_mail('Welcome to Hall of Fame', html_message, 'EMAIL_HOST_USER', [user.email])
+
         return view
 
 
