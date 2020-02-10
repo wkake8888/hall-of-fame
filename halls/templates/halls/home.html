@@ -31,6 +31,10 @@
                             {{ video.title }}
                         </p>
                     </div>
+                    <form method="post" action="api/likes/">
+                        {% csrf_token %}
+                        <button type="submit">LIKE</button>
+                    </form>
                 </div>
             </div>
             {% endfor %}

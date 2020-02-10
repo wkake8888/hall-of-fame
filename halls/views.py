@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
-from .models import Hall, Video
+from .models import Hall, Video, VideoUserRelation
 from .forms import SingupForm, VideoForm, SearchForm
 from django.http import Http404, JsonResponse
+from django.contrib.auth.models import User
 import urllib
 import requests
 from django.forms.utils import ErrorList
@@ -13,6 +14,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .task import welcome_mail
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from rest_framework import viewsets
+from .serializers import UserSerializer, VideoUserRelationSerializer, HallSerializer, VideoSerializer
 
 
 YOUTUBE_API_KEY = 'AIzaSyDiCnsnhoOLn0xMhpbyU8RjNmMbrrypnI4'
@@ -150,3 +153,7 @@ class DeleteVideo(LoginRequiredMixin, generic.DeleteView):
             raise Http404
         return video
 
+
+class VideoUserRelationViewSet(viewsets.ModelViewSet):
+    queryset = VideoUserRelation.objects.all()
+    serializer_class = VideoUserRelationSerializer

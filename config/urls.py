@@ -15,10 +15,15 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.urls import path
+from django.urls import path, include
 from halls import views
 from django.conf.urls.static import static
 from django.conf import settings
+from rest_framework import routers
+from halls.views import VideoUserRelationViewSet
+
+router = routers.DefaultRouter()
+router.register(r'likes', VideoUserRelationViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -37,6 +42,7 @@ urlpatterns = [
     path('halloffame/<int:pk>/add_video', views.add_video, name='add_video'),
     path('video/search', views.video_search, name='video_search'),
     path('video/<int:pk>/delete', views.DeleteVideo.as_view(), name='delete_video'),
+    path('api/', include(router.urls))
 
 
 ]
