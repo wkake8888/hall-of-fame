@@ -14,7 +14,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .task import welcome_mail
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
-from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework import viewsets, authentication, permissions, status
+from rest_framework.views import APIView
 from .serializers import UserSerializer, VideoUserRelationSerializer, HallSerializer, VideoSerializer
 
 
@@ -157,3 +159,14 @@ class DeleteVideo(LoginRequiredMixin, generic.DeleteView):
 class VideoUserRelationViewSet(viewsets.ModelViewSet):
     queryset = VideoUserRelation.objects.all()
     serializer_class = VideoUserRelationSerializer
+
+
+class LikeButton(APIView):
+    authentication_classes = [authentication.SessionAuthentication]
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = VideoUserRelationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

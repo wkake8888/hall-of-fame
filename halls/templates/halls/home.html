@@ -30,11 +30,16 @@
                         <p class="card-text">
                             {{ video.title }}
                         </p>
+                        {{ video.id }}
                     </div>
-                    <form method="post" action="api/likes/">
+                    <form method="post" action="api/like_btn/">
                         {% csrf_token %}
+                        <input type="hidden" id="post_like">
+                        <input type="hidden" name="video" value="{{ video.id }}">
+                        <input type="hidden" name="liker" value="{{ user.id }}">
                         <button type="submit">LIKE</button>
                     </form>
+                    {{ video.liker.count }}
                 </div>
             </div>
             {% endfor %}
