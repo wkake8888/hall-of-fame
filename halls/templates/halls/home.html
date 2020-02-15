@@ -30,16 +30,17 @@
                         <p class="card-text">
                             {{ video.title }}
                         </p>
-                        {{ video.id }}
                     </div>
-                    <form method="post" action="api/like_btn/">
-                        {% csrf_token %}
-                        <input type="hidden" id="post_like">
-                        <input type="hidden" name="video" value="{{ video.id }}">
-                        <input type="hidden" name="liker" value="{{ user.id }}">
-                        <button type="submit">LIKE</button>
-                    </form>
-                    {{ video.liker.count }}
+                    <div class="form-inline">
+                        <form method="post" action="api/like_btn/" id="form-{{ video.id }}">
+                            {% csrf_token %}
+                            <input type="hidden" id="video-{{ video.id }}" name="video" value="{{ video.id }}">
+                            <input type="hidden" id="liker-{{ video.id }}" name="liker" value="{{ user.id }}">
+                            <button class="btn-link"><i class="fas fa-heart"></i></button>
+                            <span class="like_count">{{ video.liker.count }}</span>
+                        </form>
+                    </div>
+
                 </div>
             </div>
             {% endfor %}
@@ -71,5 +72,46 @@
         </div>
     {% endfor %}
 </div>
+<script>
+    // function likeButton(e) {
+    //     e.preventDefault();
+    //     $.ajax({
+    //       url: '{% url "like_btn" %}',
+    //       method: 'POST',
+    //       data: {
+    //           'video': $('#video').val(),
+    //           'liker': $('#liker').val()
+    //       },
+    //       timeout: 10000,
+    //       dataType: "json",
+    //     })
+    //     .done( function(data) {
+    //         let change_like = $("#like_count").text();
+    //       $("#like_count").text(++change_like);
+    //     })
+    // }
+    $("form").submit( function(event) {
+        event.preventDefault();
+        var eventDOM = event.target;
+        console.log(eventDOM)
+        var form = $(this);
+        $.ajax({
+          url: form.prop("action"),
+          method: form.prop("method"),
+          data: form.serialize(),
+          timeout: 10000,
+          dataType: "text",
+        })
+        .done( function(data) {
+            console.log(data)
+            // let change_like = $('#like_count').text();
+            $.get("api/like_btn/", function (data, status) {
+                var counter = data.length
+                $('.like_count').html(counter)
+                console.log("Data: " + data + "\nStatus: " + status);
+            })
+        })
+      });
 
+</script>
 {% endblock %}

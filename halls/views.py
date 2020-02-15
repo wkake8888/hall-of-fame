@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth import authenticate, login
@@ -11,10 +11,11 @@ import requests
 from django.forms.utils import ErrorList
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .task import welcome_mail
 from django.core.mail import send_mail
 from django.template.loader import render_to_string
+from django_filters import rest_framework as filters
 from rest_framework.response import Response
+from rest_framework.exceptions import ValidationError
 from rest_framework import viewsets, authentication, permissions, status
 from rest_framework.views import APIView
 from .serializers import UserSerializer, VideoUserRelationSerializer, HallSerializer, VideoSerializer
@@ -161,12 +162,33 @@ class VideoUserRelationViewSet(viewsets.ModelViewSet):
     serializer_class = VideoUserRelationSerializer
 
 
+class LikeFilter(filters.FilterSet):
+    class Meta:
+        model = VideoUserRelation
+        fields = '__all__'
+
+
 class LikeButton(APIView):
     authentication_classes = [authentication.SessionAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
+        print(request)
         serializer = VideoUserRelationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
+        video_id = serializer.validated_data['video']
+        if VideoUserRelation.objects.filter(liker=request.user, video=video_id).exists():
+            print('already exist so delete the object')
+            get_object_or_404(VideoUserRelation, liker=request.user, video=video_id).delete()
+        else:
+            print('new user')
+            serializer.save()
+        like_count = VideoUserRelation.objects.filter(liker=request.user, video=video_id).count()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def get(self, request):
+        filter_set = LikeFilter(request.query_params, queryset=VideoUserRelation.objects.filter(liker=request.user))
+        if not filter_set.is_valid():
+            raise ValidationError(filter_set.errors)
+        serializer = VideoUserRelationSerializer(instance=filter_set.qs, many=True)
+        return Response(serializer.data, status.HTTP_200_OK)
