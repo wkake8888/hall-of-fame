@@ -30,11 +30,13 @@
                         <p class="card-text">
                             {{ video.title }}
                         </p>
+                        # {{ video.id }}
                     </div>
                     <div class="form-inline">
                         <form method="post" action="api/like_btn/" id="form-{{ video.id }}">
                             {% csrf_token %}
-                            <input type="hidden" id="video-{{ video.id }}" name="video" value="{{ video.id }}">
+                            <input type="hidden" id="video-{{ video.id }}" class="video" name="video"
+                                   value="{{ video.id }}">
                             <input type="hidden" id="liker-{{ video.id }}" name="liker" value="{{ user.id }}">
                             <button class="btn-link"><i class="fas fa-heart"></i></button>
                             <span class="like_count">{{ video.liker.count }}</span>
@@ -66,6 +68,16 @@
                             {{ video.title }}
                         </p>
                     </div>
+                    <div class="form-inline">
+                        <form method="post" action="api/like_btn/">
+                            {% csrf_token %}
+                            <input type="hidden" class="video" name="video"
+                                   value="{{ video.id }}">
+                            <input type="hidden" name="liker" value="{{ user.id }}">
+                            <button class="btn-link"><i class="fas fa-heart"></i></button>
+                            <span class="like_count">{{ video.liker.count }}</span>
+                        </form>
+                    </div>
                 </div>
             </div>
             {% endfor %}
@@ -73,45 +85,33 @@
     {% endfor %}
 </div>
 <script>
-    // function likeButton(e) {
-    //     e.preventDefault();
-    //     $.ajax({
-    //       url: '{% url "like_btn" %}',
-    //       method: 'POST',
-    //       data: {
-    //           'video': $('#video').val(),
-    //           'liker': $('#liker').val()
-    //       },
-    //       timeout: 10000,
-    //       dataType: "json",
-    //     })
-    //     .done( function(data) {
-    //         let change_like = $("#like_count").text();
-    //       $("#like_count").text(++change_like);
-    //     })
-    // }
     $("form").submit( function(event) {
         event.preventDefault();
-        var eventDOM = event.target;
-        console.log(eventDOM)
-        var form = $(this);
+        let like = $(this).children('span');
+        let video_id = $(this).children('.video');
+        let form = $(this);
         $.ajax({
           url: form.prop("action"),
           method: form.prop("method"),
           data: form.serialize(),
           timeout: 10000,
           dataType: "text",
+            context: {
+              like: like,
+                video_id: video_id,
+            },
         })
         .done( function(data) {
-            console.log(data)
-            // let change_like = $('#like_count').text();
-            $.get("api/like_btn/", function (data, status) {
-                var counter = data.length
-                $('.like_count').html(counter)
-                console.log("Data: " + data + "\nStatus: " + status);
+            console.log(data);
+            let like = this.like;
+            let video_id = this.video_id.val();
+            console.log(video_id);
+            $.get("api/like_btn/", {pk: video_id},function (data, status) {
+                let counter_num = data.length;
+                like.text(counter_num);
+                console.log("Data: " + data[0] + "\nStatus: " + status);
             })
         })
       });
-
 </script>
 {% endblock %}

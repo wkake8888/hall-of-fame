@@ -183,12 +183,14 @@ class LikeButton(APIView):
         else:
             print('new user')
             serializer.save()
-        like_count = VideoUserRelation.objects.filter(liker=request.user, video=video_id).count()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def get(self, request):
-        filter_set = LikeFilter(request.query_params, queryset=VideoUserRelation.objects.filter(liker=request.user))
+        pk = request.query_params.get('pk')
+        filter_set = LikeFilter(request.query_params, queryset=VideoUserRelation.objects.filter(liker=request.user,
+                                                                                                video=pk))
         if not filter_set.is_valid():
             raise ValidationError(filter_set.errors)
         serializer = VideoUserRelationSerializer(instance=filter_set.qs, many=True)
+        print(filter_set.qs)
         return Response(serializer.data, status.HTTP_200_OK)
