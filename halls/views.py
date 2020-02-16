@@ -187,8 +187,7 @@ class LikeButton(APIView):
 
     def get(self, request):
         pk = request.query_params.get('pk')
-        filter_set = LikeFilter(request.query_params, queryset=VideoUserRelation.objects.filter(liker=request.user,
-                                                                                                video=pk))
+        filter_set = LikeFilter(request.query_params, queryset=VideoUserRelation.objects.filter(video=pk))
         if not filter_set.is_valid():
             raise ValidationError(filter_set.errors)
         serializer = VideoUserRelationSerializer(instance=filter_set.qs, many=True)
