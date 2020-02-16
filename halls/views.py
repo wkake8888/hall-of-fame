@@ -23,7 +23,7 @@ from .serializers import UserSerializer, VideoUserRelationSerializer, HallSerial
 
 YOUTUBE_API_KEY = 'AIzaSyDiCnsnhoOLn0xMhpbyU8RjNmMbrrypnI4'
 
-
+@login_required
 def home(request):
     recent_halls = Hall.objects.all().order_by('-id')[:3]
     popular_halls = [Hall.objects.get(pk=2), Hall.objects.get(pk=3), Hall.objects.get(pk=4)]
@@ -173,7 +173,6 @@ class LikeButton(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        print(request)
         serializer = VideoUserRelationSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         video_id = serializer.validated_data['video']

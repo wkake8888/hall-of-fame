@@ -10,14 +10,6 @@
   max-width: 51rem;
 }
 
-.btn-link {
-    border: none;
-    outline: none;
-    background: none;
-    cursor: pointer;
-    color: pink;
-    padding: 0;
-    text-decoration: underline;
-    font-family: inherit;
-    font-size: inherit;
+.like-button {
+
 }
