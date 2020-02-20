@@ -1,0 +1,8 @@
+{% extends 'halls/base.html' %}
+
+{% block content %}
+    <form action="{% url 'counter' %}" method="post">
+        {% csrf_token %}
+        <button type="submit">count</button>
+    </form>
+{% endblock %}
