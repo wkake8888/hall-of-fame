@@ -5,12 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e4df346d-9a0c-4867-9c11-bfd697a8c129" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.ebextensions/02_python.config" beforeDir="false" afterPath="$PROJECT_DIR$/.ebextensions/02_python.config" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.ebextensions/django.config" beforeDir="false" afterPath="$PROJECT_DIR$/.ebextensions/django.config" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/halls/management/commands/createsu.py" beforeDir="false" afterPath="$PROJECT_DIR$/halls/management/commands/createsu.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/task.txt" beforeDir="false" afterPath="$PROJECT_DIR$/task.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/psycopg2/_psycopg.cpython-36m-darwin.so" beforeDir="false" afterPath="$PROJECT_DIR$/venv/lib/python3.6/site-packages/psycopg2/_psycopg.cpython-36m-darwin.so" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -88,7 +83,7 @@
       <workItem from="1581427309732" duration="52963000" />
       <workItem from="1582031341407" duration="2749000" />
       <workItem from="1582037382445" duration="13420000" />
-      <workItem from="1582640766192" duration="543000" />
+      <workItem from="1582640766192" duration="3544000" />
     </task>
     <servers />
   </component>
