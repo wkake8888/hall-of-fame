@@ -4,7 +4,9 @@
     <option name="SCOPE_TYPE" value="3" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e4df346d-9a0c-4867-9c11-bfd697a8c129" name="Default Changelist" comment="" />
+    <list default="true" id="e4df346d-9a0c-4867-9c11-bfd697a8c129" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -119,10 +121,14 @@
       <screen x="-242" y="-1080" width="1920" height="1080" />
     </state>
     <state x="306" y="-798" key="IDE.errors.dialog/0.0.1440.900/-242.-1080.1920.1080@-242.-1080.1920.1080" timestamp="1581778153314" />
-    <state x="227" y="-901" key="SettingsEditor" timestamp="1583633214689">
+    <state x="428" y="-826" key="MultipleFileMergeDialog" timestamp="1583634063185">
       <screen x="-242" y="-1080" width="1920" height="1080" />
     </state>
-    <state x="227" y="-901" key="SettingsEditor/0.0.1440.900/-242.-1080.1920.1080@-242.-1080.1920.1080" timestamp="1583633214689" />
+    <state x="428" y="-826" key="MultipleFileMergeDialog/0.0.1440.900/-242.-1080.1920.1080@-242.-1080.1920.1080" timestamp="1583634063185" />
+    <state x="227" y="-901" key="SettingsEditor" timestamp="1583634175318">
+      <screen x="-242" y="-1080" width="1920" height="1080" />
+    </state>
+    <state x="227" y="-901" key="SettingsEditor/0.0.1440.900/-242.-1080.1920.1080@-242.-1080.1920.1080" timestamp="1583634175318" />
     <state x="388" y="-799" width="659" height="518" key="find.popup" timestamp="1583633154567">
       <screen x="-242" y="-1080" width="1920" height="1080" />
     </state>
