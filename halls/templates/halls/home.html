@@ -31,6 +31,17 @@
                             {{ video.title }}
                         </p>
                     </div>
+                    <div class="form-inline">
+                        <form method="post" action="api/like_btn/">
+                            {% csrf_token %}
+                            <input type="hidden" name="liker" value="{{ user.id }}">
+                            <input type="hidden" class="video" name="video"
+                                   value="{{ video.id }}">
+                            <a type="submit" class="like-button" href="#"><i class="far fa-heart"></i></a>
+                            <span class="like_count">{{ video.liker.count }}</span>
+                        </form>
+                    </div>
+
                 </div>
             </div>
             {% endfor %}
@@ -56,11 +67,57 @@
                             {{ video.title }}
                         </p>
                     </div>
+                    <div class="form-inline">
+                        <form method="post" action="api/like_btn/">
+                            {% csrf_token %}
+                            <input type="hidden" name="preference" value="">
+                            <input type="hidden" name="liker" value="{{ user.id }}">
+                            <input type="hidden" class="video" name="video"
+                                   value="{{ video.id }}">
+                            <a type="submit" class="like-button" href="#">
+                                <i class="far fa-heart"></i>
+                            </a>
+                            <span class="like_count">{{ video.liker.count }}</span>
+                        </form>
+                    </div>
                 </div>
             </div>
             {% endfor %}
         </div>
     {% endfor %}
 </div>
-
+<script>
+    $(".like-button").click( function(event) {
+        event.preventDefault();
+        let like = $(this).next();
+        let like_icon = $(this).children('i')
+        let video_id = $(this).prev();
+        let form = $(this).parent('form');
+        $.ajax({
+          url: form.prop("action"),
+          method: form.prop("method"),
+          data: form.serialize(),
+          timeout: 10000,
+          dataType: "json",
+            context: {
+              like: like,
+                video_id: video_id,
+                like_icon: like_icon,
+            },
+        })
+        .done( function(data) {
+            if (data.id){
+                this.like_icon.addClass('fas')
+            }else {
+                this.like_icon.removeClass('fas')
+            }
+            let like = this.like;
+            let video_id = this.video_id.val();
+            $.get("api/like_btn/", {pk: video_id},function (data) {
+                let counter_num = data.length;
+                like.text(counter_num);
+            })
+        })
+      });
+</script>
 {% endblock %}
