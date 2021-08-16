@@ -44,7 +44,6 @@ INSTALLED_APPS = [
     'halls',
     'widget_tweaks',
     'rest_framework',
-    'social_django',
 ]
 
 MIDDLEWARE = [
@@ -70,8 +69,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'social_django.context_processors.backends',
-                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -163,20 +160,3 @@ REST_FRAMEWORK = {
             'rest_framework.renderers.JSONRenderer',
         )
 }
-
-# social authentication
-# SOCIAL_AUTH_POSTGRES_JSONFIELD = True
-#
-# AUTHENTICATION_BACKENDS = (
-#     'social_core.backends.open_id.OpenIdAuth',
-#     'social_core.backends.google.GoogleOpenId',
-#     'social_core.backends.google.GoogleOAuth2',
-#     'social_core.backends.google.GoogleOAuth',
-#     'social_core.backends.twitter.TwitterOAuth',
-#     'social_core.backends.yahoo.YahooOpenId',
-# )
-#
-# SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '170992074654-1004o43l57il0bt76f425kon6jn8fcj5.apps.googleusercontent.com'
-# SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'If_VFn17x6oBwj_aDKiQJOeg'
-#
-# SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'home'
