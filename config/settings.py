@@ -95,7 +95,7 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'mydatabase',
+            'NAME': 'local_HoF',
             'USER': 'postgres',
             'PASSWORD': 'Shanghai979',
             'HOST': 'localhost',
