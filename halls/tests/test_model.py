@@ -34,8 +34,8 @@ class HallModelTests(TestCase):
 
 class VideoModelTests(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='taro', email='taro@…',
-                                             password='top_secret')
+        self.user = User.objects.create_user(
+            username='taro', email='taro@…', password='top_secret')
         self.hall = Hall(title='Sports', user=self.user)
         self.hall.save()
 
@@ -53,11 +53,9 @@ class VideoModelTests(TestCase):
 
     def test_saving_and_retrieving_video(self):
         title = 'test title'
-        url = 'https://www.youtube.com/watch?v=K8hF7qQE5nQ&list=\
-            LLRdrrwPIQqhSvZ7F-W2A_rg&index=5&t=0s'
+        url = 'https://www.youtube.com/watch?v=K8hF7qQE5nQ&list=LLRdrrwPIQqhSvZ7F-W2A_rg&index=5&t=0s'
         youtube_id = 'K8hF7qQE5nQ'
-        video = Video(title='test title', url='https://www.youtube.com/watch?v=\
-            K8hF7qQE5nQ&list=LLRdrrwPIQqhSvZ7F-W2A_rg&index=5&t=0s',
+        video = Video(title='test title', url='https://www.youtube.com/watch?v=K8hF7qQE5nQ&list=LLRdrrwPIQqhSvZ7F-W2A_rg&index=5&t=0s',
                       youtube_id='K8hF7qQE5nQ', hall=self.hall)
         video.save()
 
@@ -72,13 +70,11 @@ class VideoModelTests(TestCase):
 
 class VideoUserRelationModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username='taro', email='taro@…',
-                                             password='top_secret')
+        self.user = User.objects.create_user(username='taro', email='taro@…', password='top_secret')
         self.user.save()
         self.hall = Hall(title='Sports', user=self.user)
         self.hall.save()
-        self.video = Video(title='test title', url='https://www.youtube.com/\
-        watch?v=K8hF7qQE5nQ&list=LLRdrrwPIQqhSvZ7F-W2A_rg&index=5&t=0s',
+        self.video = Video(title='test title', url='https://www.youtube.com/watch?v=K8hF7qQE5nQ&list=LLRdrrwPIQqhSvZ7F-W2A_rg&index=5&t=0s',
                            youtube_id='K8hF7qQE5nQ', hall=self.hall)
         self.video.save()
 
@@ -87,15 +83,13 @@ class VideoUserRelationModelTest(TestCase):
         self.assertEqual(saved_video_user_relation.count(), 0)
 
     def test_is_one(self):
-        video_user_relation = VideoUserRelation(video=self.video,
-                                                liker=self.user)
+        video_user_relation = VideoUserRelation(video=self.video, liker=self.user)
         video_user_relation.save()
         saved_video_user_relation = VideoUserRelation.objects.all()
         self.assertEqual(saved_video_user_relation.count(), 1)
 
     def test_saving_and_retrieving_video_user_relation(self):
-        video_user_relation = VideoUserRelation(video=self.video,
-                                                liker=self.user)
+        video_user_relation = VideoUserRelation(video=self.video, liker=self.user)
         video_user_relation.save()
 
         saved_video_user_relation = VideoUserRelation.objects.all()

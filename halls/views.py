@@ -23,6 +23,7 @@ from .serializers import UserSerializer, VideoUserRelationSerializer, HallSerial
 
 YOUTUBE_API_KEY = 'AIzaSyDiCnsnhoOLn0xMhpbyU8RjNmMbrrypnI4'
 
+
 @login_required
 def home(request):
     recent_halls = Hall.objects.all().order_by('-id')[:3]
@@ -108,12 +109,12 @@ class CreateHall(LoginRequiredMixin, generic.CreateView):
     fields = ['title']
     template_name = 'halls/create_hall.html'
     success_url = reverse_lazy('dashboard')
-    
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         super(CreateHall, self).form_valid(form)
         return redirect('dashboard')
-    
+
 
 class DetailHall(generic.DetailView):
     model = Hall
