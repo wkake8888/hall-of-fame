@@ -32,3 +32,24 @@ class DashboardTests(TestCase):
         repr_hall = repr(hall)
         self.assertEqual(response.status_code, 200)
         self.assertQuerysetEqual(response.context['halls'], [repr_hall])
+
+
+class DetailHallTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='tester', password='top_secret')
+
+    def test_correct_pk(self):
+        hall = Hall.objects.create(title='test title', user=self.user)
+        id = hall.id
+        client = Client()
+        response = client.get('/halloffame/' + str(id))
+        self.assertEqual(response.status_code, 200)
+
+    def test_wrong_pk(self):
+        hall = Hall.objects.create(title='test title', user=self.user)
+        id = hall.id + 1
+        client = Client()
+        response = client.get('/halloffame/' + str(id))
+        self.assertEqual(response.status_code, 404)
