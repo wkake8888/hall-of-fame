@@ -34,6 +34,23 @@ class DashboardTests(TestCase):
         self.assertQuerysetEqual(response.context['halls'], [repr_hall])
 
 
+class CreateHallTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.factory = RequestFactory()
+        cls.user = User.objects.create_user(username='tester', password='top_secret')
+
+    def test_create_success(self):
+        client = Client()
+        client.login(username='tester', password='top_secret')
+        params = {'title': 'test title'}
+        response = client.post('/halloffame/create', params)
+        hall = Hall.objects.get()
+        self.assertEqual(Hall.objects.count(), 1)
+        self.assertRedirects(response, '/dashboard', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+
+
 class DetailHallTests(TestCase):
     @classmethod
     def setUpClass(cls):
