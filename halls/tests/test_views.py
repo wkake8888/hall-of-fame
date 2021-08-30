@@ -49,6 +49,7 @@ class CreateHallTests(TestCase):
         hall = Hall.objects.get()
         self.assertEqual(Hall.objects.count(), 1)
         self.assertRedirects(response, '/dashboard', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+        self.assertEqual(response.context['title'], hall.title)
 
 
 class DetailHallTests(TestCase):
@@ -57,14 +58,15 @@ class DetailHallTests(TestCase):
         super().setUpClass()
         cls.user = User.objects.create_user(username='tester', password='top_secret')
 
-    def test_correct_pk(self):
+    def test_access_with_correct_pk(self):
         hall = Hall.objects.create(title='test title', user=self.user)
         id = hall.id
         client = Client()
         response = client.get('/halloffame/' + str(id))
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, hall.title)
 
-    def test_wrong_pk(self):
+    def test_access_with_wrong_pk(self):
         hall = Hall.objects.create(title='test title', user=self.user)
         id = hall.id + 1
         client = Client()
