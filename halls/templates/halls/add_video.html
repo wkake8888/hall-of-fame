@@ -10,7 +10,6 @@
         {% for field in form %}
         <div class="form-group {% if field.errors %}alert-danger{% endif %}">
             {{ field.errors }}
-            {{ field.label_tag }}
             {% render_field field class="form-control" %}
         </div>
         {% endfor %}
