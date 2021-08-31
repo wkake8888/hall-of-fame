@@ -1,7 +1,6 @@
-from django.test import TestCase, Client, RequestFactory
-from django.test.utils import setup_test_environment
-from django.contrib.auth.models import User
-from django.urls import reverse
+import re
+from django.test import TestCase, Client
+from django.contrib.auth.models import User, AnonymousUser
 from ..models import Hall, Video, VideoUserRelation
 from ..views import dashboard
 
@@ -10,11 +9,29 @@ def create_hall(title, hall_user):
     return Hall.objects.create(title=title, user=hall_user)
 
 
+class SignUpTests(TestCase):
+    def test_get_signup(self):
+        client = Client()
+        response = client.get('/signup')
+        self.assertEqual(response.status_code, 200)
+
+    def test_post_signup(self):
+        client = Client()
+        params = {
+            'username': 'tester',
+            'email': 'test@...',
+            'password1': 'top_secret',
+            'password2': 'top_secret2'
+        }
+        response = client.post('/signup', params, format='json')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(User.objects.count(), 1)
+
+
 class DashboardTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.factory = RequestFactory()
         cls.user = User.objects.create_user(username='tester', password='top_secret')
 
     def test_no_hall(self):
@@ -39,7 +56,6 @@ class CreateHallTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.factory = RequestFactory()
         cls.user = User.objects.create_user(username='tester', password='top_secret')
 
     def test_create_success(self):
@@ -78,6 +94,36 @@ class DetailHallTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
 
+class UpdateHallTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='tester', password='top_secret')
+        cls.hall = Hall.objects.create(title='test title', user=cls.user)
+
+    def test_get_update_hall(self):
+        client = Client()
+        client.force_login(self.user)
+        response = client.get('/halloffame/' + str(self.hall.id) + '/update')
+        self.assertContains(response, 'test title')
+
+    def test_not_hall_manager_get(self):
+        client = Client()
+        not_hall_manager = User.objects.create(username='taro', password='hoge')
+        client.force_login(not_hall_manager)
+        response = client.get('/halloffame/' + str(self.hall.id) + '/update')
+        self.assertEqual(response.status_code, 404)
+
+    def test_post_update_hall(self):
+        client = Client()
+        client.force_login(self.user)
+        params = {'title': 'updated title'}
+        response = client.post('/halloffame/' + str(self.hall.id) + '/update', params, format='json')
+        self.assertRedirects(response, '/dashboard', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+        get_response = client.get('/halloffame/' + str(self.hall.id) + '/update')
+        self.assertContains(get_response, 'updated title')
+
+
 class DeleteHallTests(TestCase):
     @classmethod
     def setUpClass(cls):
@@ -98,6 +144,53 @@ class DeleteHallTests(TestCase):
         response = client.post('/halloffame/' + str(hall_a.id) + '/delete')
         self.assertEqual(Hall.objects.count(), 2)
         self.assertRedirects(response, '/dashboard', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+
+
+class AddVideoTests(TestCase):
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.user = User.objects.create_user(username='tester', password='top_secret')
+        cls.hall = Hall.objects.create(title='test title', user=cls.user)
+
+    def test_not_hall_manager(self):
+        not_hall_manager = User.objects.create(username='taro', password='hoge')
+        client = Client()
+        client.force_login(not_hall_manager)
+        response = client.get('/halloffame/' + str(self.hall.id) + '/add_video')
+        self.assertEqual(response.status_code, 404)
+
+    def test_add_video_with_wrong_url(self):
+        # No video at initial state
+        self.assertEqual(Video.objects.count(), 0)
+
+        # Try to add a video by wrong url
+        client = Client()
+        client.force_login(self.user)
+        url = 'https://www.youtube.com/watch?v=K8hF7qQE5n'
+        params = {
+            'hall': self.hall,
+            'url': url,
+        }
+        response = client.post('/halloffame/' + str(self.hall.id) + '/add_video', params, format='json')
+        self.assertEqual(Video.objects.count(), 0)
+        # self.assertRedirects(response, '/halloffame/' + str(self.hall.id), status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
+
+    def test_add_video(self):
+        # No video at initial state
+        self.assertEqual(Video.objects.count(), 0)
+
+        # Add a video
+        client = Client()
+        client.force_login(self.user)
+        url = 'https://www.youtube.com/watch?v=K8hF7qQE5nQ'
+        params = {
+            'hall': self.hall,
+            'url': url,
+        }
+        response = client.post('/halloffame/' + str(self.hall.id) + '/add_video', params, format='json')
+        self.assertEqual(Video.objects.count(), 1)
+        self.assertRedirects(response, '/halloffame/' + str(self.hall.id), status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
 
 
 class DeleteVideoTests(TestCase):
