@@ -18,13 +18,13 @@ class SignUpTests(TestCase):
     def test_post_signup(self):
         client = Client()
         params = {
-            'username': 'tester',
-            'email': 'test@...',
-            'password1': 'top_secret',
-            'password2': 'top_secret2'
+            'username': 'hogetaro',
+            'email': 'hoge@gmail.com',
+            'password1': 'hoge8888',
+            'password2': 'hoge8888'
         }
         response = client.post('/signup', params, format='json')
-        self.assertEqual(response.status_code, 200)
+        self.assertRedirects(response, '/dashboard', status_code=302, target_status_code=200, msg_prefix='', fetch_redirect_response=True)
         self.assertEqual(User.objects.count(), 1)
 
 
