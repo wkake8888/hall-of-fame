@@ -52,17 +52,17 @@ def add_video(request, pk):
             video.url = form.cleaned_data['url']
             parsed_url = urllib.parse.urlparse(video.url)
             video_id = urllib.parse.parse_qs(parsed_url.query).get('v')
-            if video_id:
-                video.youtube_id = video_id[0]
-                response = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ video_id[0] }&key={ YOUTUBE_API_KEY }')
-                json = response.json()
+            video.youtube_id = video_id[0]
+            response = requests.get(f'https://www.googleapis.com/youtube/v3/videos?part=snippet&id={ video_id[0] }&key={ YOUTUBE_API_KEY }')
+            json = response.json()
+            if len(json['items']) != 0:
                 title = json['items'][0]['snippet']['title']
                 video.title = title
                 video.save()
                 return redirect('detail_hall', pk)
             else:
                 errors = form._errors.setdefault('url', ErrorList())
-                errors.append('Needs to be a YouTube URL')
+                errors.append('URL is incorrect. Need to be a correct YouTube URL')
 
     return render(request, 'halls/add_video.html', {'form': form, 'search_form': search_form, 'hall': hall})
 
@@ -71,8 +71,8 @@ def add_video(request, pk):
 def video_search(request):
     search_form = SearchForm(request.GET)
     if search_form.is_valid():
-        search_form.cleaned_data['search_term']
-        encoded_search_term = urllib.parse.quote(search_form.cleaned_data['search_term'])
+        search_term = search_form.cleaned_data['search_term']
+        encoded_search_term = urllib.parse.quote(search_term)
         response = requests.get(f'https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=6&q={ encoded_search_term }&key={ YOUTUBE_API_KEY }')
         return JsonResponse(response.json())
     else:
@@ -98,7 +98,6 @@ class SignUp(generic.CreateView):
                 'username': user.username,
             }
         )
-
         send_mail('Welcome to Hall of Fame', html_message, 'EMAIL_HOST_USER', [user.email])
 
         return view
