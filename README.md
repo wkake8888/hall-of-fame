@@ -15,4 +15,4 @@ Description：
 　技術：サーバーサイドはPythonのDjangoで開発、フロントはHTML, CSS, Javascriptを使っている。
 
 URL：
- https://rocky-sands-75261.herokuapp.com/
+ https://www.kakehiro-wada.com
